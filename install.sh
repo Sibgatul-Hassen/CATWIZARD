@@ -6,21 +6,21 @@ REPO_USER="Sibgatul-Hassen"
 REPO_NAME="catwizard"
 REPO_URL="https://raw.githubusercontent.com/$REPO_USER/$REPO_NAME/main"
 
-COWSAY_PATH="/usr/games/cowsay" # <--- ADDED FULL PATH
+COWSAY_PATH="/usr/games/cowsay" 
 INSTALL_DIR="/usr/local/share/$REPO_NAME"
 BIN_PATH="/usr/local/bin/$REPO_NAME"
 
 echo "🧙‍♂️ Starting CatWizard Installation..."
 
 # 1. Check for dependencies
-# Use the full path for the check
-if [ ! -f "$COWSAY_PATH" ]; then
-    echo "Error: 'cowsay' dependency not found at expected location ($COWSAY_PATH)."
+# Check if the file exists AND is executable using the -x flag
+if [ ! -x "$COWSAY_PATH" ]; then
+    echo "Error: 'cowsay' dependency not found or not executable at $COWSAY_PATH."
     echo "Please ensure cowsay is installed (e.g., sudo apt install cowsay)."
     exit 1
 fi
 
-# 2. Check for root privileges (already good, but keeping it simple for curl pipe)
+# 2. Check for root privileges 
 if [ "$EUID" -ne 0 ]; then
     echo "Please run the installer with sudo:"
     echo "curl -s $REPO_URL/install.sh | sudo bash"
@@ -42,8 +42,8 @@ curl -s "$REPO_URL/catwizard.cow" -o "$INSTALL_DIR/catwizard.cow"
 # 4. Create the symbolic link for global execution
 echo "-> Creating global executable link: $BIN_PATH"
 # Create a small wrapper script in /usr/local/bin
-echo "#!/bin/bash" > "$BIN_PATH"
-echo 'exec '"$INSTALL_DIR/$REPO_NAME"' "$@"' >> "$BIN_PATH"
+echo "#!/bin/bash" | sudo tee "$BIN_PATH" > /dev/null
+echo 'exec '"$INSTALL_DIR/$REPO_NAME"' "$@"' | sudo tee -a "$BIN_PATH" > /dev/null
 chmod +x "$BIN_PATH"
 
 echo ""
