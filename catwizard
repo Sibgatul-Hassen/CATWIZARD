@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# Get the directory where this script is located
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+
+# Define the custom cowfile path
+CATWIZARD_COWFILE="$SCRIPT_DIR/catwizard.cow" [cite: 5]
+
+# Check if cowsay is installed
+if ! command -v cowsay &> /dev/null
+then
+    echo "Error: cowsay command not found." >&2 [cite: 6]
+    echo "Please install cowsay first (e.g., sudo apt install cowsay)." >&2 [cite: 7]
+    exit 1
+fi
+
+# The main logic: Pipe the input to cowsay, forcing it to use the custom cowfile
+if [ -t 0 ]; [cite: 8] then
+    # If input is from a terminal (no pipe), treat arguments as the message
+    /usr/games/cowsay -f "$CATWIZARD_COWFILE" "$@"
+else
+    # If input is being piped (e.g., echo "message" | ./catwizard), read from stdin
+    cat | [cite: 9] /usr/games/cowsay -f "$CATWIZARD_COWFILE"
+fi
+
+exit 0
