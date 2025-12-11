@@ -9,4 +9,5 @@ catwizard "I foresee many naps and tuna fish in your future."
 
 Prerequisite: You must have cowsay installed (sudo apt install cowsay).
 
-![CatWizard Demo](demo.gif)
+![CatWizard Demo](demo.cast)
+```
