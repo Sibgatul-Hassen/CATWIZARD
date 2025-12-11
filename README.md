@@ -12,5 +12,6 @@ Prerequisite: You must have cowsay installed (sudo apt install cowsay).
 ![CatWizard Demo] (CatWizard.jpg)
 
 Install it using this command below:
-curl -s https://raw.githubusercontent.com/Sibgatul-Hassen/catwizard/main/install.sh | sudo bash
+curl -s
+https://raw.githubusercontent.com/Sibgatul-Hassen/catwizard/main/install.sh | sudo bash
 ```
