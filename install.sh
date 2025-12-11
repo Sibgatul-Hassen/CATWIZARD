@@ -1,34 +1,49 @@
 #!/bin/bash
 
-# --- CatWizard Installer ---
+# --- CatWizard Curl Installer ---
+
+REPO_USER="YourUsername"  # <<< CRITICAL: CHANGE THIS TO YOUR GITHUB USERNAME
+REPO_NAME="catwizard"
+REPO_URL="https://raw.githubusercontent.com/$REPO_USER/$REPO_NAME/main"
+
+INSTALL_DIR="/usr/local/share/$REPO_NAME"
+BIN_PATH="/usr/local/bin/$REPO_NAME"
+
+echo "🧙‍♂️ Starting CatWizard Installation..."
 
 # 1. Check for dependencies
 if ! command -v cowsay &> /dev/null; then
-    echo "cowsay is required. Please install it first (e.g., sudo apt install cowsay)."
+    echo "Error: 'cowsay' dependency not found."
+    echo "Please install cowsay first (e.g., sudo apt install cowsay)."
     exit 1
 fi
 
-# Define installation paths
-INSTALL_DIR="/usr/local/share/catwizard"
-BIN_PATH="/usr/local/bin/catwizard"
+# 2. Check for root privileges (required for /usr/local)
+if [ "$EUID" -ne 0 ]; then
+    echo "Please run the installer with sudo:"
+    echo "curl -s $REPO_URL/install.sh | sudo bash"
+    exit 1
+fi
 
-echo "Installing CatWizard..."
+# 3. Download and Install Files
+echo "-> Creating data directory: $INSTALL_DIR"
+mkdir -p "$INSTALL_DIR" || { echo "Failed to create install directory."; exit 1; }
 
-# 2. Create the data directory
-sudo mkdir -p "$INSTALL_DIR"
+echo "-> Downloading catwizard files..."
+# Download main executable script
+curl -s "$REPO_URL/catwizard" -o "$INSTALL_DIR/catwizard"
+chmod +x "$INSTALL_DIR/catwizard"
 
-# 3. Copy files to the data directory
-sudo cp catwizard "$INSTALL_DIR"
-sudo cp catwizard.cow "$INSTALL_DIR"
+# Download cow file
+curl -s "$REPO_URL/catwizard.cow" -o "$INSTALL_DIR/catwizard.cow"
 
-# 4. Create a symlink for global execution
-# The main script will be installed in /usr/local/bin
-echo "#!/bin/bash" | sudo tee "$BIN_PATH" > /dev/null
-echo 'exec '"$INSTALL_DIR/catwizard"' "$@"' | sudo tee -a "$BIN_PATH" > /dev/null
-sudo chmod +x "$BIN_PATH"
+# 4. Create the symbolic link for global execution
+echo "-> Creating global executable link: $BIN_PATH"
+# Create a small wrapper script in /usr/local/bin
+echo "#!/bin/bash" > "$BIN_PATH"
+echo 'exec '"$INSTALL_DIR/$REPO_NAME"' "$@"' >> "$BIN_PATH"
+chmod +x "$BIN_PATH"
 
-# 5. Finish
 echo ""
-echo "CatWizard installed successfully!"
-echo "To run, simply type: catwizard 'Your message here'"
-echo ""
+echo "🎉 CatWizard installed successfully!"
+echo "Run it now: catwizard 'Your message here'"
