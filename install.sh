@@ -9,11 +9,11 @@ BIN_PATH="/usr/local/bin/catwizard"
 echo "🧙 Installing CatWizard..."
 
 # 1. Dependency check
-if ! command -v cowsay >/dev/null 2>&1; then
-    echo "❌ cowsay is required."
-    echo "Install it using: sudo apt install cowsay"
-    exit 1
-fi
+# if ! command -v cowsay >/dev/null 2>&1; then
+#     echo "❌ cowsay is required."
+#     echo "Install it using: sudo apt install cowsay"
+#     exit 1
+# fi
 
 # 2. Create install directory
 sudo rm -rf "$INSTALL_DIR"
