@@ -2,18 +2,30 @@
 
 COW_FILE="/usr/local/share/catwizard/catwizard.cow"
 
-if ! command -v cowsay >/dev/null 2>&1; then
-  echo "Error: cowsay is not installed."
-  exit 1
-fi
-
+# Check if the cow file exists
 if [ ! -f "$COW_FILE" ]; then
-  echo "Error: catwizard.cow not found."
-  exit 1
+    echo "Error: catwizard.cow not found at $COW_FILE."
+    exit 1
 fi
 
+# Read the cow file into a variable
+COW_ART=$(cat "$COW_FILE")
+
+# If user passed arguments, show them inside the bubble
 if [ $# -eq 0 ]; then
-  cowsay -f "$COW_FILE"
+    echo "$COW_ART"
 else
-  cowsay -f "$COW_FILE" "$*"
+    # Calculate the length of the longest line
+    max_len=0
+    for word in "$*"; do
+        if [ ${#word} -gt $max_len ]; then
+            max_len=${#word}
+        fi
+    done
+    # Create bubble top
+    echo " " $(printf '_%.0s' $(seq 1 $max_len))
+    echo "< $* >"
+    echo " " $(printf '-%.0s' $(seq 1 $max_len))
+    # Print the cow art
+    echo "$COW_ART"
 fi
