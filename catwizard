@@ -11,21 +11,13 @@ fi
 # Read the cow file into a variable
 COW_ART=$(cat "$COW_FILE")
 
-# If user passed arguments, show them inside the bubble
+# If no arguments, just print the ASCII art
 if [ $# -eq 0 ]; then
     echo "$COW_ART"
 else
-    # Calculate the length of the longest line
-    max_len=0
-    for word in "$*"; do
-        if [ ${#word} -gt $max_len ]; then
-            max_len=${#word}
-        fi
-    done
-    # Create bubble top
-    echo " " $(printf '_%.0s' $(seq 1 $max_len))
+    # Print a simple speech bubble with the message
+    echo " ____"
     echo "< $* >"
-    echo " " $(printf '-%.0s' $(seq 1 $max_len))
-    # Print the cow art
+    echo " ----"
     echo "$COW_ART"
 fi
