@@ -13,4 +13,5 @@ Prerequisite: You must have cowsay installed (sudo apt install cowsay).
 
 Install it using the command below :
 curl -s https://raw.githubusercontent.com/Sibgatul-Hassen/catwizard/main/install.sh | sudo bash
+
 ```
