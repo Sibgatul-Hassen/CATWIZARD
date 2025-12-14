@@ -8,14 +8,14 @@ if [ ! -f "$COW_FILE" ]; then
     exit 1
 fi
 
-# Read the cow file into a variable
+# Read the cow file
 COW_ART=$(cat "$COW_FILE")
 
-# If no arguments, just print the ASCII art
+# If no arguments, just print ASCII art
 if [ $# -eq 0 ]; then
     echo "$COW_ART"
 else
-    # Print a simple speech bubble with the message
+    # Simple speech bubble
     echo " ____"
     echo "< $* >"
     echo " ----"
