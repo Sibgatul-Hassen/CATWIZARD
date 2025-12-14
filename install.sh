@@ -1,51 +1,36 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -e
 
-# --- CatWizard Curl Installer ---
+REPO_BASE="https://raw.githubusercontent.com/Sibgatul-Hassen/catwizard/main"
 
-REPO_USER="Sibgatul-Hassen"
-REPO_NAME="catwizard"
-REPO_URL="https://raw.githubusercontent.com/$REPO_USER/$REPO_NAME/main"
+INSTALL_DIR="/usr/local/share/catwizard"
+BIN_PATH="/usr/local/bin/catwizard"
 
-COWSAY_PATH="/usr/games/cowsay" 
-INSTALL_DIR="/usr/local/share/$REPO_NAME"
-BIN_PATH="/usr/local/bin/$REPO_NAME"
+echo "🧙 Installing CatWizard..."
 
-echo "🧙‍♂️ Starting CatWizard Installation..."
-
-# 1. Check for dependencies
-# Check if the file exists AND is executable using the -x flag
-if [ ! -x "$COWSAY_PATH" ]; then
-    echo "Error: 'cowsay' dependency not found or not executable at $COWSAY_PATH."
-    echo "Please ensure cowsay is installed (e.g., sudo apt install cowsay)."
+# 1. Dependency check
+if ! command -v cowsay >/dev/null 2>&1; then
+    echo "❌ cowsay is required."
+    echo "Install it using: sudo apt install cowsay"
     exit 1
 fi
 
-# 2. Check for root privileges 
-if [ "$EUID" -ne 0 ]; then
-    echo "Please run the installer with sudo:"
-    echo "curl -s $REPO_URL/install.sh | sudo bash"
-    exit 1
-fi
+# 2. Create install directory
+sudo rm -rf "$INSTALL_DIR"
+sudo mkdir -p "$INSTALL_DIR"
 
-# 3. Download and Install Files
-echo "-> Creating data directory: $INSTALL_DIR"
-mkdir -p "$INSTALL_DIR" || { echo "Failed to create install directory."; exit 1; }
+# 3. Download files from GitHub
+sudo curl -fsSL "$REPO_BASE/catwizard" \
+  -o "$INSTALL_DIR/catwizard"
 
-echo "-> Downloading catwizard files..."
-# Download main executable script
-curl -s "$REPO_URL/catwizard" -o "$INSTALL_DIR/catwizard"
-chmod +x "$INSTALL_DIR/catwizard"
+sudo curl -fsSL "$REPO_BASE/catwizard.cow" \
+  -o "$INSTALL_DIR/catwizard.cow"
 
-# Download cow file
-curl -s "$REPO_URL/catwizard.cow" -o "$INSTALL_DIR/catwizard.cow"
+# 4. Permissions
+sudo chmod +x "$INSTALL_DIR/catwizard"
 
-# 4. Create the symbolic link for global execution
-echo "-> Creating global executable link: $BIN_PATH"
-# Create a small wrapper script in /usr/local/bin
-echo "#!/bin/bash" | sudo tee "$BIN_PATH" > /dev/null
-echo 'exec '"$INSTALL_DIR/$REPO_NAME"' "$@"' | sudo tee -a "$BIN_PATH" > /dev/null
-chmod +x "$BIN_PATH"
+# 5. Symlink executable
+sudo ln -sf "$INSTALL_DIR/catwizard" "$BIN_PATH"
 
-echo ""
-echo "🎉 CatWizard installed successfully!"
-echo "Run it now: catwizard 'Your message here'"
+echo "✅ CatWizard installed successfully!"
+echo "👉 Run it with: catwizard \"your message\""
